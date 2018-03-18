@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Data from:
+http://swiss-glaciers.glaciology.ethz.ch/download/silvretta.html
+Time: 1956-2015
+"Beinhaltet die Massenbilanzänderungen (pro Jahr) und aufsummierten Massebilanzen""
+
+```{r}
+dat = read.csv("silvretta.csv", header = TRUE, sep = ",", skip = 11)
+
+# tryout column 3 (d/dt) and 4 (absolutes)
+g_data = dat[,3]
+g_years = dat[,2]
+
+plot(x=g_years, y=g_data, type="o", main="Massebilanzänderung", xlab="", ylab="m H2O / Jahr")
+
+acf(g_data)
+mean(g_data)
+```
+
+additive decomposition of the time series
+decompose can't work ccorrectly without seasonalities (this is only annual data)!
+
+```{r}
+decomp = decompose(ts(g_data, frequency = 10), "additive")
+plot(decomp)
+```
+
+do it on our own
+
+```{r}
+# trend
+l = lm(g_data ~ g_years)
+trend = g_years*l$coefficients[2] + l$coefficients[1]
+
+# without trend
+detrend = g_data - trend
+
+#output
+acf(detrend)
+mean(detrend)
+
+plot(as.ts(g_data))
+lines(trend)
+
+plot(as.ts(detrend))
+```
+
+
