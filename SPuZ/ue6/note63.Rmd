@@ -1,0 +1,43 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r}
+# wie viele s
+smax = 30
+
+# die varianzen
+m = 10
+va = c(0,1,1,1,1,1,1,1,1,1,0)
+
+ #lambda_k
+lambda <- function(k) {
+  return ((2*k-1) * pi / (2 * m))
+}
+
+# alle gamma(s) von 0 bis 15
+g = matrix(0, nrow=smax+1, ncol=1)
+for (s in 0:smax) {
+  g[(s+1),] = 0
+  
+  # berechne gamma(s) (die summe)
+  for (k in 1:m) {
+    g[(s+1),] = g[(s+1),] + 4*va[k]*cos(lambda(k)*s)
+  }
+}
+
+# plotte mit histogramm linien (nutze die symmetrie!)
+plot(x=c(-(smax-1):(smax-1)), y=c(g[(smax):2,], g[1,], g[2:(smax),]), type='h', ylab="gamma(s)", xlab="s")
+abline(h=0)
+
+# um die "einhüllende" besser zu sehen noch ein plot mit verbundenen "punkten"
+plot(x=c(-(smax-1):(smax-1)), y=c(g[(smax):2,], g[1,], g[2:(smax),]), type='o', ylab="gamma(s)", xlab="s")
+abline(h=0)
+
+# ACHTUNG: die "spitzen" entstehen, wenn cos(0) summiert wird!
+
+```
