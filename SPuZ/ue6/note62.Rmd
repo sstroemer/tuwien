@@ -1,0 +1,34 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Periodogramm => Amplitude spezieller Frequenzen
+(demean mittelwertbereinigun)
+(detrend trendbereinigung)
+(taper specifies the proportion of data to taper. A split cosine bell taper is applied to this proportion of the data at the beginning and end of the series) "taper" = "verjüngung"
+
+Lade Daten und bereite Zeitreihe (der logarithmierten Werte) vor
+```{r}
+dat = read.csv("UnemploymentDE.txt", comment.char="#", header=TRUE)
+X = ts(log(dat$UU), start=c(1990,9), frequency=12)
+```
+
+
+Periodogramm der Werte
+```{r}
+spectrum(X,method="pgram", taper=0, fast=FALSE, demean=TRUE, detrend=FALSE)
+```
+
+
+der Differenzen (monatlich)
+```{r}
+spectrum(diff(X),method="pgram", taper=0, fast=FALSE, demean=TRUE, detrend=FALSE)
+```
+
+
+der Differenzen (jährlich)
+```{r}
+spectrum(diff(X,12),method="pgram", taper=0, fast=FALSE, demean=TRUE, detrend=FALSE)
+```
+
