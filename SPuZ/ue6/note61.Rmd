@@ -41,56 +41,81 @@ g = acf(x[1:T1], lag.max = k.max, type = "covariance",
 ```
 
 
-Prognose aus k=3 vergangenen Werten:
-Prognosekoeffizienten + Fehlervarianz berechnen
 ```{r}
-k = 3
-G = toeplitz(g$acf[1:k])
-c = solve(G,g$acf[2:(k+1)])
-s2 = g$acf[1] - c %*% g$acf[2:(k+1)]
-
-c
-s2
-```
-
-
-ein-Schrittprognosen der (mittelwertbereinigten) Wachstumsraten
-```{r}
-xh = rep(NA,T)
-Xh = xh
-for (t in ((k+1):T)) {
-  xh[t] = c %*% x[(t-1):(t-k)]
+stats=matrix(0,nrow=k.max,ncol=6)
+for(k in 1:k.max) {
+  # Prognose aus k vergangenen Werten:
+  # Prognosekoeffizienten + Fehlervarianz berechnen
+  G = toeplitz(g$acf[1:k])
+  c = solve(G,g$acf[2:(k+1)])
+  s2 = g$acf[1] - c %*% g$acf[2:(k+1)]
+  
+  # ein-Schrittprognosen der (mittelwertbereinigten) Wachstumsraten
+  xh = rep(NA,T)
+  Xh = xh
+  for (t in ((k+1):T)) {
+    xh[t] = c %*% x[(t-1):(t-k)]
+  }
+  uh = x - xh
+  mean.expuh = mean(exp(uh[1:T1]), na.rm = TRUE)
+  
+  # ein-Schrittprognosen der Arbeitslosenzahlen
+  Xh = rep(NA,T)
+  for (t in (13:T)) {
+    Xh[t] = exp(log(X[t-12]) + mean.x + xh[t])*mean.expuh
+  }
+  Uh = X - Xh
+  
+  # RMSE (root-mean-square error) berechnen
+  # Zuerst sqrt(sigma^2)
+  # Dann expuh
+  # Dann sqrt von mittelwert von:
+  # - uh (prognosefehler der 1SchrittP d. mwb. Wachstumsraten) in [1:T1]
+  # - Uh (prognosefehler der 1SchittP d. Arbeitslosenzahlen)   in [1:T1]
+  # - wie oben nur in [T1+1:T]
+  # - wie oben nur in [T1+1:T]
+  stats[k,] = c(sqrt(s2),
+            mean.expuh,
+            sqrt(mean(uh[1:T1]^2,na.rm = TRUE)),
+            sqrt(mean(Uh[1:T1]^2,na.rm = TRUE)),
+            sqrt(mean(uh[(T1+1):T]^2,na.rm = TRUE)),
+            sqrt(mean(Uh[(T1+1):T]^2,na.rm = TRUE)))
 }
-uh = x - xh
-mean.expuh = mean(exp(uh[1:T1]), na.rm = TRUE)
+
+# z.B.:
+stats[1,]
 ```
 
 
-ein-Schrittprognosen der Arbeitslosenzahlen
+Plotte die Resultate
 ```{r}
-Xh = rep(NA,T)
-for (t in (13:T)) {
-  Xh[t] = exp(log(X[t-12]) + mean.x + xh[t])*mean.expuh
-}
-Uh = X - Xh
+# minimierer auslesen
+k_wachstum<-which.min(stats[,5]) #minimiert out-of-sample RMSE bei Wachstumsrate
+k_absolut<-which.min(stats[,6]) #minimiert out-of-sample RMSE bei Arbeitslosenzahl
+
+plot(1:k.max,stats[,1],type="l",main="Geschätzte Prognosefehlervarianz",xlab="k",ylab="sd")
+
+#RMSE für Wachstumsrate
+plot(1:k.max,stats[,3],type="l",main="RMSE für Wachstumsrate, in-sample",xlab="k",ylab="RMSE")
+plot(1:k.max,stats[,5],type="l",main="RMSE für Wachstumsrate, out-of-sample",xlab="k",ylab="RMSE")
+abline(v=k_wachstum, col="red")
+abline(h=stats[k_wachstum,5], col="red")
+
+#RMSE für Arbeitslosenzahl
+plot(1:k.max,stats[,4],type="l",main="RMSE für Arbeitslosenzahl, in-sample",xlab="k",ylab="RMSE")
+plot(1:k.max,stats[,6],type="l",main="RMSE für Arbeitslosenzahl, out-of-sample",xlab="k",ylab="RMSE")
+abline(v=k_absolut, col="red")
+abline(h=stats[k_absolut,6], col="red")
+
+# Das ideale k ist? (=13)
+k_wachstum
+k_absolut
 ```
 
 
-RMSE (root-mean-square error) berechnen
-Zuerst sqrt(sigma^2)
-Dann expuh
-Dann sqrt von mittelwert von:
-- uh (prognosefehler der 1SchrittP d. mwb. Wachstumsraten) in [1:T1]
-- Uh (prognosefehler der 1SchittP d. Arbeitslosenzahlen)   in [1:T1]
-- wie oben nur in [T1+1:T]
-- wie oben nur in [T1+1:T]
 ```{r}
-stats = c(sqrt(s2),
-          mean.expuh,
-          sqrt(mean(uh[1:T1]^2,na.rm = TRUE)),
-          sqrt(mean(Uh[1:T1]^2,na.rm = TRUE)),
-          sqrt(mean(uh[(T1+1):T]^2,na.rm = TRUE)),
-          sqrt(mean(Uh[(T1+1):T]^2,na.rm = TRUE)))
-stats
 ```
+
+
+```{r}```
 
