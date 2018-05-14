@@ -1,0 +1,44 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+Allgemein
+```{r}
+x_data = seq(from = -pi, to = pi, by = 0.01)
+```
+
+
+7.3
+```{r}
+sd73 <- function(lambda, s2, b0, b1) {
+  return(s2 / (2*pi) * (b0*b0 + b1*b1 + 2*b0*b1*cos(lambda)));
+}
+
+plot(x = x_data, y = sd73(x_data, 1, 1, 0.5), type='l', col='black')
+points(x = x_data, y = sd73(x_data, 1, 1, -0.5), type='l', col='red')
+# points(x = x_data, y = sd73(x_data, 0.25, 1, 2), type='l', col='green')
+# das ist das selbe wie die erste dichte!
+```
+
+7.4
+```{r}
+sd74_1 <- function(lambda, s2, a) {
+  return(s2 / (2*pi) / (1 + a*a - 2*a*cos(lambda)));
+}
+sd74_2 <- function(lambda, s2, a) {
+  return(s2 / (2*pi) / (1 + a*a - 2*a*cos(4*lambda)));
+}
+
+plot(x = x_data, y = sd74_1(x_data, 1, -0.9), type='l', col='black')
+points(x = x_data, y = sd74_1(x_data, 1, 0), type='l', col='red')
+points(x = x_data, y = sd74_1(x_data, 1, 0.9), type='l', col='green')
+
+plot(x = x_data, y = sd74_2(x_data, 1, -0.9), type='l', col='black')
+points(x = x_data, y = sd74_2(x_data, 1, 0), type='l', col='red')
+points(x = x_data, y = sd74_2(x_data, 1, 0.9), type='l', col='green')
+```
+
