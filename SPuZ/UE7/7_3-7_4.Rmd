@@ -22,6 +22,9 @@ plot(x = x_data, y = sd73(x_data, 1, 1, 0.5), type='l', col='black')
 points(x = x_data, y = sd73(x_data, 1, 1, -0.5), type='l', col='red')
 # points(x = x_data, y = sd73(x_data, 0.25, 1, 2), type='l', col='green')
 # das ist das selbe wie die erste dichte!
+
+plot(x = x_data, y = sd73(x_data, 1, 1, 1), type='l', col='black')
+points(x = x_data, y = sd73(x_data, 1, -1, 1), type='l', col='red')
 ```
 
 7.4
