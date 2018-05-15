@@ -1,0 +1,110 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+8.4
+Setup:
+
+Lade Daten
+Transformiere yes/no -> 1/0
+Erzwinge admin als erste Alternative => alles wird auf admin (coeff=0) normiert
+
+```{r}
+library(AER)
+library(mlogit)
+library(nnet)
+
+options("scipen"=999, "digits"=4)
+
+data("BankWages")
+BankWages$minority = as.numeric(BankWages$minority) - 1
+BankWages$job<-factor(BankWages$job, levels = c("admin", "manage", "custodial"))
+```
+
+
+Kleiner Überblick über die Daten
+```{r}
+sum(BankWages$job == "admin" & BankWages$gender == "female")
+sum(BankWages$job == "manage" & BankWages$gender == "female")
+sum(BankWages$job == "custodial" & BankWages$gender == "female")
+
+sum(BankWages$job == "admin" & BankWages$gender == "male")
+sum(BankWages$job == "manage" & BankWages$gender == "male")
+sum(BankWages$job == "custodial" & BankWages$gender == "male")
+```
+
+
+Erzeuge Modelle und plotte summary
+```{r}
+mlm.male <- multinom(job ~ 0 + education + minority, data = BankWages,
+                      subset = gender == "male", trace = FALSE)
+mlm.female <- multinom(job ~ 0 + education + minority, data = BankWages,
+                        subset = gender == "female", trace = FALSE)
+
+summary(mlm.male)
+print("----------------------------------------------------------------------")
+summary(mlm.female)
+```
+
+
+8.5
+Erzeuge Modelle mit mlogit für AME
+```{r}
+# generic | individual | alternatives
+mlog.male <- mlogit(job ~ 0 | 0 + education + minority | 0, data = BankWages,
+                    subset = gender == "male", shape = "wide", reflevel = "admin")
+mlog.female <- mlogit(job ~ 0 | 0 + education + minority | 0, data = BankWages,
+                      subset = gender == "female", shape = "wide", reflevel = "admin")
+```
+
+
+AME Helper
+```{r}
+avgME <- function(model, condition) {
+  set <- subset(BankWages, subset = gender == condition)
+  P <- model$probabilities
+  beta <- matrix(c(0,0,
+                   model$coefficients["education:custodial"],model$coefficients["minority:custodial"],
+                   model$coefficients["education:manage"],model$coefficients["minority:manage"]),
+                 nrow=2, ncol=3)
+  setSize <- dim(P)[1]
+  beta.mean = matrix(nrow=setSize, ncol=2)
+  for (i in 1:setSize) {
+    beta.mean[i,] <- P[i,] %*% t(beta)
+  }
+  
+  avg.me = matrix(nrow=3, ncol=2)
+  rownames(avg.me) <- c("Change in P(admin)","Change in P(custodial)","Change in P(manage)")
+  colnames(avg.me) <- c("education","minority")
+  
+  for (j in 1:3) {
+    avg.me[j,] = c(0, 0)
+    for (i in 1:setSize) {
+      avg.me[j,] <- avg.me[j,] + (P[i,j] * (beta[,j] - t(beta.mean[i,])))
+    }
+    avg.me[j,] <- avg.me[j,] / setSize
+  }
+  
+  return(avg.me)
+}
+```
+
+
+Ergebnisse:
+```{r}
+avgME(mlog.male, "male")
+avgME(mlog.female, "female")
+```
+
+
+
+
+
+
+
+
+
+
