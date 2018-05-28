@@ -1,0 +1,40 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r}
+tf1 <- function(lambda) {
+  return(exp(-1i*lambda));
+}
+tf2 <- function(lambda) {
+  return(1 + exp(-4i*lambda));
+}
+tf3 <- function(lambda) {
+  return(1 + 4/5*exp(-1i*lambda) + 3/5*exp(-2i*lambda) + 2/5*exp(-3i*lambda) + 1/5*exp(-4i*lambda));
+}
+tf4 <- function(lambda) {
+  return(0.125 + 0.125*cos(4*lambda) + 0.25*(cos(3*lambda) + cos(2*lambda) + cos(lambda)));
+}
+```
+
+Argument in ROT, Betrag in SCHWARZ
+```{r}
+lambda = seq(-pi, pi, 0.01);
+
+plot(x = lambda, y = Arg(tf1(lambda)), type = "l", col = "red", lwd=3, ylim=c(-pi,+pi))
+lines(x = lambda, y = Mod(tf1(lambda)), type = "l", col = "black", lwd=3)
+
+plot(x = lambda, y = Arg(tf2(lambda)), type = "l", col = "red", lwd=3, ylim=c(-pi,+pi))
+lines(x = lambda, y = Mod(tf2(lambda)), type = "l", col = "black", lwd=3)
+
+plot(x = lambda, y = Arg(tf3(lambda)), type = "l", col = "red", lwd=3, ylim=c(-pi,+pi))
+lines(x = lambda, y = Mod(tf3(lambda)), type = "l", col = "black", lwd=3)
+
+plot(x = lambda, y = Arg(tf4(lambda)), type = "l", col = "red", lwd=3, ylim=c(-pi,+pi))
+lines(x = lambda, y = Mod(tf4(lambda)), type = "l", col = "black", lwd=3)
+```
+
