@@ -1,0 +1,97 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+Allgemeines Setup der Daten
+```{r}
+# read: https://cran.r-project.org/web/packages/mlogit/vignettes/mlogit.pdf
+
+suppressMessages(library(AER))
+suppressMessages(library(mlogit))
+suppressMessages(library(stats))
+
+# "Data on travel mode choice for travel between Sydney and Melbourne, Australia."
+# used columns:
+# choice      gibt die Wahl des Verkehrsmittels an (yes/no)
+# wait        Wartezeit am Terminal (0 für Auto)  *
+# travel      Dauer der Reise mit dem gewählten Verkehrsmittel *
+# vcost       Kosten des Transports *
+# income      Einkommen des Haushalts **
+
+# man erkennt: * ist abhängig von der Wahl, ** nur vom Individuum
+data("TravelMode")
+```
+
+
+Korrektes Einsetzen der erklärenden Variable in das mlogit Modell  
+Alle Koeffizienten beziehen sich auf "car" ("Referenzlevel")
+```{r}
+# mlogit:
+# alternative specific variables xij with a generic coefficient $\beta$ |
+# individual specific variables zi with an alternative specific coefficients $\gamma$j |
+# alternative specific variables wij with an alternative specific coefficient $\delta$j
+
+# Mixed-Logit Model
+mlm.wI  <- mlogit(choice ~ wait + travel + vcost | 1 + income | 0, data = TravelMode,
+                  shape = "long", alt.var = "mode", reflevel = "car")
+mlm.woI <- mlogit(choice ~ wait + travel + vcost | 0 + income | 0, data = TravelMode,
+                  shape = "long", alt.var = "mode", reflevel = "car")
+
+summary(mlm.wI)
+summary(mlm.woI)
+```
+
+Nochmal, diesmal mit einem Nested Modell
+```{r}
+# Nested-Logit Model
+nlm <- mlogit(choice ~ wait + travel + vcost | 1 + income | 0, data = TravelMode,
+              shape = "long", alt.var = "mode", reflevel = "car",
+              nests = list(bt = c("bus","train"), ca = c("car","air")))
+
+summary(nlm)
+# soweit ich das sehe, sind die nest-elasticities genau unsere rho's
+# ob die Formel gleich ist... 
+
+# zusätzlich aus dem helpfile
+# iv:* ... "nest elasticity", not close to each other
+# otherwise we could improve the model with un.nest.el = TRUE
+
+# "[...] it can be shown [...]  that this model is compatible with the random utility
+# maximisation hypothesis if all the nest elasticities are in the 0-1 interval"
+```
+
+
+Optional:  
+Wir wollen die IIA testen. Gilt diese, so ist das Ordnen der Alternativeen in Nests nicht zielführend. Es läuft also auf einen Vergleich des MLM mit dem NLM hinaus. Einzig wichtig dabei ist, dass wir beide mit/ohne Intercept vergleicheen (die Modelle müssen bsi auf das Neesting ident sein). Somit "entspricht" unser MLM der Parameterrestriktion der Nullhypothese ($\rho_i = 1$), bzw. das NLM der Alternativhypothese
+```{r}
+lrtest(mlm.wI, nlm)
+```
+
+$H_0: \rho_1 = \rho_2 = 1$, also die $u_{ij1}, \dots, u_{ijm_j}$ (also innerhalb des Nests) sind unabhängig  
+$H_1: \rho_i \neq 1$ für ein $i$, also keine IIA Struktur  
+  
+    
+Wir erstellen also:  
+  
+$T_{LR} = \frac{L_n(H_0)}{L_n(H_1)}$, dann ist  
+  
+$-2 \ln T_{LR}$ in Verteilung $\chi^2_q$ mit $q=11-9=2$ Freiheitsgraden, also 
+  
+$\bar{T} = 2 (\ln(L_n(H_1) - \ln(L_n(H_0))))$
+
+```{r}
+# as.double um den tag der Log.Lik mit df=11 zu entfernen (der stimmt ja jetzt nicht mehr)
+T <- 2 * as.double(nlm$logLik - mlm.wI$logLik)
+T
+
+# 99% Quantil einer chi-sqr Verteilung mit 2 Freiheitsgraden
+qchisq(.99, df=2)
+
+# lower.tail erzwingt P[X > x] statt P[X <= x]
+pchisq(T, df=2, lower.tail = FALSE)
+```
+

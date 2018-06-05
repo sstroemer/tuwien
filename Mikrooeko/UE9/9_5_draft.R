@@ -32,5 +32,7 @@ summary(nlm)
 
 # "... it can be shown ...  that this model is compatible with the random utility maximisation hypothesis if all the nest elasticities are in the 0 − 1 interval"
 
-D <- -2 * log(mlm.wI$logLik / nlm$logLik)
+lrtest(mlm.wI, nlm)
+
+D <- 2 * (nlm$logLik - mlm.wI$logLik)
 qchisq(.95, df=9)
