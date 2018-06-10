@@ -2,6 +2,7 @@
 
 library(AER)
 library(mlogit)
+library(stats)
 
 # "Data on travel mode choice for travel between Sydney and Melbourne, Australia."
 data("TravelMode")
@@ -35,4 +36,4 @@ summary(nlm)
 lrtest(mlm.wI, nlm)
 
 D <- 2 * (nlm$logLik - mlm.wI$logLik)
-qchisq(.95, df=9)
+qchisq(.95, df=11 - 9)
