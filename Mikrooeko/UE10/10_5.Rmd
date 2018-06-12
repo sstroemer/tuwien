@@ -11,13 +11,51 @@ suppressMessages(library(AER))
 suppressMessages(library(survival))
 
 data(tobin)
+data(Affairs)
 ```
-
   
+  
+Tobit Modell auf das Affairs-Datenset (nur mit einigen numerischen erkl. Variablen)  
+Zuerst getrennt nach Männern/Frauen
+```{r}
+# Erklärende Variablen:
+#   age             Alter
+#   yearsmarried    Dauer der Ehe in Jahren
+#   religiousness   Religiosität (1-5 = gegen-sehr)
+#   education       Kodierte Ausbildung (9-20 = grade school-Ph.D.)
+#   rating          Selbsteinschätzung der Ehe (1-5 = sehr unglücklich-sehr glücklich)      
+
+model.affairs   <- tobit(affairs ~ age + yearsmarried + religiousness + education + rating,
+                         data=Affairs, x=TRUE)
+model.affairs.m <- tobit(affairs ~ age + yearsmarried + religiousness + education + rating,
+                         data=Affairs, subset=gender == "female")
+model.affairs.w <- tobit(affairs ~ age + yearsmarried + religiousness + education + rating,
+                         data=Affairs, subset=gender == "male")
+
+summary(model.affairs.m)
+summary(model.affairs.w)
+```
+  
+  
+Average Marginal effects:  
+Wir wissen für die ME: $\alpha := \beta / \sigma$ und $\frac{\partial E(y_i)}{\partial x_i} = \Phi(x_i'\alpha)\beta = \Phi(x_i'\beta / \sigma)\beta$  
+Also: $AME_j = \Phi(\overline{x_i'\alpha})\beta_j$, wobei $\bar{z}$ den arithm. Mittelwert bezeichnet
+```{r}
+# MARGIN = 2 ... Funktion auf Spalten anwewden
+# FUN = mean ... Funktion ist mean()
+pnorm(
+  apply(
+    model.affairs$x %*% model.affairs$coef / model.affairs$scale,
+    MARGIN = 2, FUN = mean
+  )
+) * model.affairs$coef[-1]
+```
+  
+  
+Nur der Vollständigkeit halber:  
 Das "tobin" dataset  
 Anzahl an gekauften "durable goods" abhängig von Alter und Einkommen (in 1000$)
 ```{r}
 model.tobin <- tobit(durable ~ age + quant, data=tobin)
 summary(model.tobin)
 ```
-

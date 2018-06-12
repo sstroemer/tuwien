@@ -124,9 +124,15 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code>suppressMessages(library(AER))
+<pre class="r"><code># wir laden die library die unsere daten beinhaltet
+suppressMessages(library(AER))
+# und die, die unsere funktion beinhaltet
 suppressMessages(library(survival))
 
+# wir laden unsere daten: &quot;Economists fit a parametric censored data model called the ‘tobit’. These data are from Tobin's original paper.&quot;
+# durable ... Durable goods purchase
+# age     ... Age in years
+# quant   ... Liquidity ratio (x 1000)
 data(tobin)</code></pre>
 <p>Das “tobin” dataset<br />
 Anzahl an gekauften “durable goods” abhängig von Alter und Einkommen (in 1000$)</p>
@@ -155,6 +161,9 @@ summary(model.tobin)</code></pre>
 ## Number of Newton-Raphson Iterations: 3 
 ## Log-likelihood: -28.94 on 4 Df
 ## Wald-statistic: 1.124 on 2 Df, p-value: 0.57002</code></pre>
+<pre class="r"><code># wir sehen: 20 daten, 13 davon sind links-zeensiert (durch 0), nur 7 haben &quot;einen wert&quot;
+# age und quant &quot;estimate&quot; geben uns unsere geschätzten parameter an
+# negatives vorzeichen bedeutet, bei steigendem wert, sinkt &quot;durable&quot;</code></pre>
 
 
 
