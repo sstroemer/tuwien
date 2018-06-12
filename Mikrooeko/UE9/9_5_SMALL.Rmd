@@ -1,9 +1,9 @@
 ---
 title: "R Notebook"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 Allgemeines Setup der Daten
@@ -36,11 +36,16 @@ Alle Koeffizienten beziehen sich auf "car" ("Referenzlevel")
 # alternative specific variables wij with an alternative specific coefficient $\delta$j
 
 # Mixed-Logit Model
+# zuerst mit Intercept, dann ohne
+# choice wird regressiert auf {wait + travel + vcost} und {income}
+# ersteres variiiert über die Alternativen, zweiteres nicht
 mlm.wI  <- mlogit(choice ~ wait + travel + vcost | 1 + income | 0, data = TravelMode,
                   shape = "long", alt.var = "mode", reflevel = "car")
 mlm.woI <- mlogit(choice ~ wait + travel + vcost | 0 + income | 0, data = TravelMode,
                   shape = "long", alt.var = "mode", reflevel = "car")
 
+# man sieht in der summary die Frequenzen (Häufigkeiten) der auftretenden Entscheeidungen
+# und die geschätzten Parameter, kann eigentlich nur Aussagen über die Vorzeichen treffen
 summary(mlm.wI)
 summary(mlm.woI)
 ```
@@ -53,15 +58,11 @@ nlm <- mlogit(choice ~ wait + travel + vcost | 1 + income | 0, data = TravelMode
               nests = list(bt = c("bus","train"), ca = c("car","air")))
 
 summary(nlm)
-# soweit ich das sehe, sind die nest-elasticities genau unsere rho's
-# ob die Formel gleich ist... 
+# erneeut wieder nur Vorzeichen aussagekräftig -> nun "besseres" Vorzeichen bei air
 
 # zusätzlich aus dem helpfile
-# iv:* ... "nest elasticity", not close to each other
-# otherwise we could improve the model with un.nest.el = TRUE
+# iv:* sind die jeweiligen "inculsive values" (Formel im helpfile entspricht "unserer inclusive sum") des Nests
 
-# "[...] it can be shown [...]  that this model is compatible with the random utility
-# maximisation hypothesis if all the nest elasticities are in the 0-1 interval"
 ```
 
 
