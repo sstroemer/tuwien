@@ -27,7 +27,67 @@ for (i in 3:max.response) {
 }
 
 for (i in 0:10) {
-  print(b[i,,])
+  print(b[i,,])---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+Allgemeines Setup der Daten
+```{r}
+# read: https://cran.r-project.org/web/packages/mlogit/vignettes/mlogit.pdf
+
+suppressMessages(library(AER))
+suppressMessages(library(mlogit))
+suppressMessages(library(stats))
+
+# "Data on travel mode choice for travel between Sydney and Melbourne, Australia."
+# used columns:
+# choice      gibt die Wahl des Verkehrsmittels an (yes/no)
+# wait        Wartezeit am Terminal (0 für Auto)  *
+# travel      Dauer der Reise mit dem gewählten Verkehrsmittel *
+# vcost       Kosten des Transports *
+# income      Einkommen des Haushalts **
+
+# man erkennt: * ist abhängig von der Wahl, ** nur vom Individuum
+data("TravelMode")
+```
+
+
+Korrektes Einsetzen der erklärenden Variable in das mlogit Modell  
+Alle Koeffizienten beziehen sich auf "car" ("Referenzlevel")
+```{r}
+# mlogit:
+# alternative specific variables xij with a generic coefficient $\beta$ |
+# individual specific variables zi with an alternative specific coefficients $\gamma$j |
+# alternative specific variables wij with an alternative specific coefficient $\delta$j
+
+# Mixed-Logit Model
+# zuerst mit Intercept, dann ohne
+# choice wird regressiert auf {wait + travel + vcost} und {income}
+# ersteres variiiert über die Alternativen, zweiteres nicht
+mlm.wI  <- mlogit(choice ~ wait + travel + vcost | 1 + income | 0, data = TravelMode,
+                  shape = "long", alt.var = "mode", reflevel = "car")
+mlm.woI <- mlogit(choice ~ wait + travel + vcost | 0 + income | 0, data = TravelMode,
+                  shape = "long", alt.var = "mode", reflevel = "car")
+
+# man sieht in der summary die Frequenzen (Häufigkeiten) der auftretenden Entscheeidungen
+# und die geschätzten Parameter, kann eigentlich nur Aussagen über die Vorzeichen treffen
+summary(mlm.wI)
+summary(mlm.woI)
+```
+
+Nochmal, diesmal mit einem Nested Modell
+```{r}
+# Nested-Logit Model
+nlm <- mlogit(choice ~ wait + travel + vcost | 1 + income | 0, data = TravelMode,
+              shape = "long", alt.var = "mode", reflevel = "car",
+              nests = list(bt = c("bus","train"), ca = c("car","air")))
+
+summary(nlm)
+# erneeut wieder nur Vorzeichen aussagekräftig -> nun "besseres" Vorzeichen bei air
 }
 ```
 

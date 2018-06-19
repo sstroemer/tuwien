@@ -1,0 +1,54 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
+---
+
+
+```{r}
+suppressMessages(library(AER))
+suppressMessages(library(sampleSelection))
+data(tobin)
+data(Mroz87)
+
+tobin$durable_binary <- as.numeric(tobin$durable > 0)
+Mroz87$kids <- as.numeric((Mroz87$kids5 + Mroz87$kids618) > 0)
+```
+
+
+```{r}
+model.tobit  <- tobit(durable ~ 1 + age + quant, data=tobin)
+model.probit <- glm(durable_binary ~ 1 + age + quant, data=tobin, family=binomial(link = "probit"), x=T)
+tobin$IMR    <- invMillsRatio(model.probit)$IMR1
+model.heckit <- lm(durable ~ 1 + age + quant + IMR, data=tobin, subset=(durable>0))
+
+summary(model.tobit)
+summary(model.probit)
+summary(model.heckit)
+```
+
+
+Zur Kontrolle, dass die benutzten Algorithmen mit unserer Theorie übereinstimmen:
+```{r}
+# ist invMillsRatio() wirklich "lambda(-x_i' * alpha_PROB)"
+tobin$manualIMR <- dnorm(-model.probit$x %*% model.probit$coefficients) / (1 - pnorm(-model.probit$x %*% model.probit$coefficients))
+abs(tobin$IMR - t(tobin$manualIMR)) < 10^-15
+
+```
+
+
+Nochmals mit einem anderen Datenset
+```{r}
+model2.tobit  <- tobit(wage ~ 1 + exper + I(exper^2) + educ + city, data=Mroz87)
+model2.probit <- glm(lfp ~ 1 + age + I(age^2) + faminc + kids + educ, data=Mroz87, family=binomial(link = "probit"), x=T)
+Mroz87$IMR    <- invMillsRatio(model2.probit)$IMR1
+model2.heckit <- lm(wage ~ 1 + exper + I(exper^2) + educ + city + IMR, data=Mroz87, subset=(lfp==1))
+
+summary(model2.tobit)
+summary(model2.probit)
+summary(model2.heckit)
+```
+

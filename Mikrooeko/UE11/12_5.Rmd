@@ -1,0 +1,62 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+```{r}
+suppressMessages(library(sampleSelection))
+data(Mroz87)
+
+# Auszug der benutzten Daten:
+# ----------------------------------------------------
+# Mroz87  - "U.S. Women's Labor Force Participation"
+# lfp     - Arbeitstätig ja/nein [1/0]
+# wage    - Durchschn. Stundenlohn (1975, $)
+
+# age     - Alter der Frau
+# educ    - Ausbildung der Frau (in Jahren)
+# faminc  - Einkommen der Familie (1975, $)
+# exper   - Berufserfahrung der Frau
+# city    - Lebt in einer Großstadt ja/nein [1/0]
+
+# kids5   - Anzahl Kinder zwischen 0-5
+# kids618 - Anzahl Kinder zwischen 6-18
+# ----------------------------------------------------
+
+# Erzeuge Spalte "kids" als "kids5 + kids618 > 0" (sind Kinder vorhanden)
+Mroz87$kids <- as.numeric((Mroz87$kids5 + Mroz87$kids618) > 0)
+
+summary(Mroz87[c("lfp","wage", "age", "educ", "faminc", "exper", "city", "kids")])
+```
+
+
+Erzeuge die beiden Modelle, einmal mittels ML- und einmal mittels Heckit-Schätzer
+```{r}
+# Erklärung der neuen Parameter von "selection()":
+# selection - Formel für die "selection/participation equation" (bei uns lfp)
+# outcome   - Formel für die "outcome equation"                 (bei uns wage)
+# method    - "ml" für ML-Schätzer, "2step" für 2-step-Heckmaan/Heckit Schätzer
+# type      - erzwinge Tobit-II Modell (default ist "auto", wählt zwischen Tobit-II und Tobit-V je nach Anzahl der outcome-Gleichungen)
+
+model.ml <- selection( 
+  selection = (lfp  ~ 1 + age + I(age^2) + faminc + kids + educ),
+  outcome   = (wage ~ 1 + exper + I(exper^2) + educ + city),
+  data=Mroz87, method="ml", type=2
+)
+model.heckit <- selection( 
+  selection = (lfp  ~ 1 + age + I(age^2) + faminc + kids + educ),
+  outcome   = (wage ~ 1 + exper + I(exper^2) + educ + city),
+  data=Mroz87, method="2step", type=2
+)
+```
+
+
+Vergleich der beiden Resultate
+```{r}
+summary(model.ml)
+summary(model.heckit)
+```
+
