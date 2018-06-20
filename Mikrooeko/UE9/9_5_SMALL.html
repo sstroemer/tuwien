@@ -134,14 +134,14 @@ suppressMessages(library(stats))
 # &quot;Data on travel mode choice for travel between Sydney and Melbourne, Australia.&quot;
 # used columns:
 # choice      gibt die Wahl des Verkehrsmittels an (yes/no)
-# wait        Wartezeit am Terminal (0 für Auto)  *
-# travel      Dauer der Reise mit dem gewählten Verkehrsmittel *
+# wait        Wartezeit am Terminal (0 fÃ¼r Auto)  *
+# travel      Dauer der Reise mit dem gewÃ¤hlten Verkehrsmittel *
 # vcost       Kosten des Transports *
 # income      Einkommen des Haushalts **
 
-# man erkennt: * ist abhängig von der Wahl, ** nur vom Individuum
+# man erkennt: * ist abhÃ¤ngig von der Wahl, ** nur vom Individuum
 data(&quot;TravelMode&quot;)</code></pre>
-<p>Korrektes Einsetzen der erklärenden Variable in das mlogit Modell<br />
+<p>Korrektes Einsetzen der erklÃ¤renden Variable in das mlogit Modell<br />
 Alle Koeffizienten beziehen sich auf “car” (“Referenzlevel”)</p>
 <pre class="r"><code># mlogit:
 # alternative specific variables xij with a generic coefficient $\beta$ |
@@ -151,14 +151,14 @@ Alle Koeffizienten beziehen sich auf “car” (“Referenzlevel”)</p>
 # Mixed-Logit Model
 # zuerst mit Intercept, dann ohne
 # choice wird regressiert auf {wait + travel + vcost} und {income}
-# ersteres variiiert über die Alternativen, zweiteres nicht
+# ersteres variiiert Ã¼ber die Alternativen, zweiteres nicht
 mlm.wI  &lt;- mlogit(choice ~ wait + travel + vcost | 1 + income | 0, data = TravelMode,
                   shape = &quot;long&quot;, alt.var = &quot;mode&quot;, reflevel = &quot;car&quot;)
 mlm.woI &lt;- mlogit(choice ~ wait + travel + vcost | 0 + income | 0, data = TravelMode,
                   shape = &quot;long&quot;, alt.var = &quot;mode&quot;, reflevel = &quot;car&quot;)
 
-# man sieht in der summary die Frequenzen (Häufigkeiten) der auftretenden Entscheeidungen
-# und die geschätzten Parameter, kann eigentlich nur Aussagen über die Vorzeichen treffen
+# man sieht in der summary die Frequenzen (HÃ¤ufigkeiten) der auftretenden Entscheeidungen
+# und die geschÃ¤tzten Parameter, kann eigentlich nur Aussagen Ã¼ber die Vorzeichen treffen
 summary(mlm.wI)</code></pre>
 <pre><code>## 
 ## Call:
@@ -261,34 +261,10 @@ summary(nlm)</code></pre>
 ## Log-Likelihood: -176.69
 ## McFadden R^2:  0.37731 
 ## Likelihood ratio test : chisq = 214.13 (p.value = &lt; 2.22e-16)</code></pre>
-<pre class="r"><code># erneeut wieder nur Vorzeichen aussagekräftig -&gt; nun &quot;besseres&quot; Vorzeichen bei air
+<pre class="r"><code># erneeut wieder nur Vorzeichen aussagekrÃ¤ftig -&gt; nun &quot;besseres&quot; Vorzeichen bei air
 
-# zusätzlich aus dem helpfile
+# zusÃ¤tzlich aus dem helpfile
 # iv:* sind die jeweiligen &quot;inculsive values&quot; (Formel im helpfile entspricht &quot;unserer inclusive sum&quot;) des Nests</code></pre>
-<p>Optional:<br />
-Wir wollen die IIA testen. Gilt diese, so ist das Ordnen der Alternativeen in Nests nicht zielführend. Es läuft also auf einen Vergleich des MLM mit dem NLM hinaus. Einzig wichtig dabei ist, dass wir beide mit/ohne Intercept vergleicheen (die Modelle müssen bsi auf das Neesting ident sein). Somit “entspricht” unser MLM der Parameterrestriktion der Nullhypothese (<span class="math inline">\(\rho_i = 1\)</span>), bzw. das NLM der Alternativhypothese</p>
-<pre class="r"><code>lrtest(mlm.wI, nlm)</code></pre>
-<div data-pagedtable="false">
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["#Df"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["LogLik"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Df"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Chisq"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Pr(>Chisq)"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"9","2":"-182.2186","3":"NA","4":"NA","5":"NA","_rn_":"1"},{"1":"11","2":"-176.6948","3":"2","4":"11.0476","5":"0.003990658","_rn_":"2"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-</div>
-<p><span class="math inline">\(H_0: \rho_1 = \rho_2 = 1\)</span>, also die <span class="math inline">\(u_{ij1}, \dots, u_{ijm_j}\)</span> (also innerhalb des Nests) sind unabhängig<br />
-<span class="math inline">\(H_1: \rho_i \neq 1\)</span> für ein <span class="math inline">\(i\)</span>, also keine IIA Struktur</p>
-<p>Wir erstellen also:</p>
-<p><span class="math inline">\(T_{LR} = \frac{L_n(H_0)}{L_n(H_1)}\)</span>, dann ist</p>
-<p><span class="math inline">\(-2 \ln T_{LR}\)</span> in Verteilung <span class="math inline">\(\chi^2_q\)</span> mit <span class="math inline">\(q=11-9=2\)</span> Freiheitsgraden, also</p>
-<p><span class="math inline">\(\bar{T} = 2 (\ln(L_n(H_1) - \ln(L_n(H_0))))\)</span></p>
-<pre class="r"><code># as.double um den tag der Log.Lik mit df=11 zu entfernen (der stimmt ja jetzt nicht mehr)
-T &lt;- 2 * as.double(nlm$logLik - mlm.wI$logLik)
-T</code></pre>
-<pre><code>## [1] 11.0476</code></pre>
-<pre class="r"><code># 99% Quantil einer chi-sqr Verteilung mit 2 Freiheitsgraden
-qchisq(.99, df=2)</code></pre>
-<pre><code>## [1] 9.21034</code></pre>
-<pre class="r"><code># lower.tail erzwingt P[X &gt; x] statt P[X &lt;= x]
-pchisq(T, df=2, lower.tail = FALSE)</code></pre>
-<pre><code>## [1] 0.003990658</code></pre>
 
 
 

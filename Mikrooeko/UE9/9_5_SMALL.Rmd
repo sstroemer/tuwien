@@ -1,9 +1,9 @@
 ---
 title: "R Notebook"
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 
 Allgemeines Setup der Daten
@@ -64,35 +64,3 @@ summary(nlm)
 # iv:* sind die jeweiligen "inculsive values" (Formel im helpfile entspricht "unserer inclusive sum") des Nests
 
 ```
-
-
-Optional:  
-Wir wollen die IIA testen. Gilt diese, so ist das Ordnen der Alternativeen in Nests nicht zielführend. Es läuft also auf einen Vergleich des MLM mit dem NLM hinaus. Einzig wichtig dabei ist, dass wir beide mit/ohne Intercept vergleicheen (die Modelle müssen bsi auf das Neesting ident sein). Somit "entspricht" unser MLM der Parameterrestriktion der Nullhypothese ($\rho_i = 1$), bzw. das NLM der Alternativhypothese
-```{r}
-lrtest(mlm.wI, nlm)
-```
-
-$H_0: \rho_1 = \rho_2 = 1$, also die $u_{ij1}, \dots, u_{ijm_j}$ (also innerhalb des Nests) sind unabhängig  
-$H_1: \rho_i \neq 1$ für ein $i$, also keine IIA Struktur  
-  
-    
-Wir erstellen also:  
-  
-$T_{LR} = \frac{L_n(H_0)}{L_n(H_1)}$, dann ist  
-  
-$-2 \ln T_{LR}$ in Verteilung $\chi^2_q$ mit $q=11-9=2$ Freiheitsgraden, also 
-  
-$\bar{T} = 2 (\ln(L_n(H_1) - \ln(L_n(H_0))))$
-
-```{r}
-# as.double um den tag der Log.Lik mit df=11 zu entfernen (der stimmt ja jetzt nicht mehr)
-T <- 2 * as.double(nlm$logLik - mlm.wI$logLik)
-T
-
-# 99% Quantil einer chi-sqr Verteilung mit 2 Freiheitsgraden
-qchisq(.99, df=2)
-
-# lower.tail erzwingt P[X > x] statt P[X <= x]
-pchisq(T, df=2, lower.tail = FALSE)
-```
-
