@@ -1,0 +1,26 @@
+\begin{thebibliography}{1}
+
+\bibitem{ets}
+Exponential smoothing state space model.
+\newblock
+  \url{https://www.rdocumentation.org/packages/forecast/versions/8.4/topics/ets}.
+\newblock Accessed: 2019-01-06.
+
+\bibitem{forecast}
+Forecasting functions for time series and linear models.
+\newblock \url{https://www.rdocumentation.org/packages/forecast/versions/8.4}.
+\newblock Accessed: 2019-01-06.
+
+\bibitem{stl}
+Seasonal decomposition of time series by loess.
+\newblock
+  \url{https://www.rdocumentation.org/packages/stats/versions/3.5.2/topics/stl}.
+\newblock Accessed: 2019-01-06.
+
+\bibitem{holidays}
+Rob~J. Hyndman.
+\newblock Forecasting with daily data.
+\newblock \url{https://robjhyndman.com/hyndsight/dailydata/}.
+\newblock Accessed: 2019-01-06.
+
+\end{thebibliography}

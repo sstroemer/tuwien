@@ -1,0 +1,114 @@
+
+Call:
+lm(formula = A ~ year + as.factor(quarter) + as.factor(month) + 
+    as.factor(dayOfWeek), data = candles.xts)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-42.583 -11.729   0.389  11.829  55.528 
+
+Coefficients: (3 not defined because of singularities)
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            307.331      3.964  77.538  < 2e-16 ***
+year                    19.226      1.591  12.085  < 2e-16 ***
+as.factor(quarter)2     57.827      3.880  14.904  < 2e-16 ***
+as.factor(quarter)3    107.298      3.879  27.661  < 2e-16 ***
+as.factor(quarter)4     45.259      3.836  11.798  < 2e-16 ***
+as.factor(month)2       14.325      3.974   3.605 0.000344 ***
+as.factor(month)3      -16.831      3.859  -4.361 1.57e-05 ***
+as.factor(month)4      -41.964      3.880 -10.816  < 2e-16 ***
+as.factor(month)5       -9.488      3.925  -2.418 0.015977 *  
+as.factor(month)6           NA         NA      NA       NA    
+as.factor(month)7      -20.169      3.857  -5.229 2.50e-07 ***
+as.factor(month)8        3.399      3.902   0.871 0.384129    
+as.factor(month)9           NA         NA      NA       NA    
+as.factor(month)10      58.843      3.859  15.248  < 2e-16 ***
+as.factor(month)11      34.656      3.860   8.977  < 2e-16 ***
+as.factor(month)12          NA         NA      NA       NA    
+as.factor(dayOfWeek)2  -33.141      2.523 -13.136  < 2e-16 ***
+as.factor(dayOfWeek)3  -65.810      2.519 -26.125  < 2e-16 ***
+as.factor(dayOfWeek)4 -129.798      2.520 -51.505  < 2e-16 ***
+as.factor(dayOfWeek)5  -96.546      2.520 -38.314  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 18.19 on 506 degrees of freedom
+Multiple R-squared:  0.9254,	Adjusted R-squared:  0.923 
+F-statistic: 392.1 on 16 and 506 DF,  p-value: < 2.2e-16
+
+
+Call:
+lm(formula = B ~ year + as.factor(quarter) + as.factor(month) + 
+    as.factor(dayOfWeek), data = candles.xts)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-109.339  -27.957    0.389   30.178  143.964 
+
+Coefficients: (3 not defined because of singularities)
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            480.377      9.687  49.587  < 2e-16 ***
+year                    -4.933      3.888  -1.269 0.205130    
+as.factor(quarter)2   -239.799      9.483 -25.288  < 2e-16 ***
+as.factor(quarter)3   -120.700      9.481 -12.731  < 2e-16 ***
+as.factor(quarter)4    100.953      9.376  10.768  < 2e-16 ***
+as.factor(month)2      -28.091      9.713  -2.892 0.003991 ** 
+as.factor(month)3     -122.315      9.432 -12.968  < 2e-16 ***
+as.factor(month)4       76.658      9.482   8.084 4.64e-15 ***
+as.factor(month)5       35.962      9.592   3.749 0.000198 ***
+as.factor(month)6           NA         NA      NA       NA    
+as.factor(month)7     -135.050      9.428 -14.324  < 2e-16 ***
+as.factor(month)8     -100.787      9.537 -10.568  < 2e-16 ***
+as.factor(month)9           NA         NA      NA       NA    
+as.factor(month)10     -67.632      9.432  -7.171 2.67e-12 ***
+as.factor(month)11       8.839      9.435   0.937 0.349322    
+as.factor(month)12          NA         NA      NA       NA    
+as.factor(dayOfWeek)2  -83.658      6.166 -13.567  < 2e-16 ***
+as.factor(dayOfWeek)3 -218.134      6.157 -35.430  < 2e-16 ***
+as.factor(dayOfWeek)4 -135.806      6.159 -22.049  < 2e-16 ***
+as.factor(dayOfWeek)5 -108.345      6.159 -17.592  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 44.45 on 506 degrees of freedom
+Multiple R-squared:  0.9165,	Adjusted R-squared:  0.9138 
+F-statistic: 346.9 on 16 and 506 DF,  p-value: < 2.2e-16
+
+
+Call:
+lm(formula = C ~ year + as.factor(quarter) + as.factor(month) + 
+    as.factor(dayOfWeek), data = candles.xts)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-23.1253  -4.5344  -0.3595   4.7874  27.5802 
+
+Coefficients: (3 not defined because of singularities)
+                      Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            93.5979     1.8292  51.168  < 2e-16 ***
+year                   -2.9769     0.7342  -4.054 5.82e-05 ***
+as.factor(quarter)2   -73.0239     1.7906 -40.782  < 2e-16 ***
+as.factor(quarter)3   -46.9761     1.7902 -26.241  < 2e-16 ***
+as.factor(quarter)4    -9.4298     1.7703  -5.327 1.51e-07 ***
+as.factor(month)2       2.8057     1.8341   1.530 0.126701    
+as.factor(month)3     -23.4821     1.7810 -13.185  < 2e-16 ***
+as.factor(month)4      22.9188     1.7905  12.800  < 2e-16 ***
+as.factor(month)5       7.0675     1.8112   3.902 0.000108 ***
+as.factor(month)6           NA         NA      NA       NA    
+as.factor(month)7     -24.3094     1.7802 -13.655  < 2e-16 ***
+as.factor(month)8     -13.6697     1.8008  -7.591 1.54e-13 ***
+as.factor(month)9           NA         NA      NA       NA    
+as.factor(month)10    -19.0174     1.7810 -10.678  < 2e-16 ***
+as.factor(month)11     -3.5531     1.7816  -1.994 0.046644 *  
+as.factor(month)12          NA         NA      NA       NA    
+as.factor(dayOfWeek)2   2.7927     1.1644   2.398 0.016825 *  
+as.factor(dayOfWeek)3 -19.2704     1.1625 -16.576  < 2e-16 ***
+as.factor(dayOfWeek)4  11.7315     1.1630  10.087  < 2e-16 ***
+as.factor(dayOfWeek)5  19.4235     1.1629  16.702  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 8.394 on 506 degrees of freedom
+Multiple R-squared:  0.929,	Adjusted R-squared:  0.9268 
+F-statistic: 414.1 on 16 and 506 DF,  p-value: < 2.2e-16
+
