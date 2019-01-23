@@ -2,16 +2,19 @@
 \contentsline {section}{\numberline {2}T\IeC {\"a}gliche Absatzzahlen: Zeitreihenbasierte Budgetierung}{6}{section.2}
 \contentsline {subsection}{\numberline {2.1}Beschreibung der Vorgehensweise}{6}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Mathematische Beschreibung der verwendeten Prognosemodelle}{6}{subsection.2.2}
-\contentsline {subsection}{\numberline {2.3}Erl\IeC {\"a}uterung der Ergebnisse f\IeC {\"u}r gegossene, gezogene und gepresste Kerzen}{6}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.3}Erl\IeC {\"a}uterung der Ergebnisse f\IeC {\"u}r gegossene, gezogene und gepresste Kerzen}{7}{subsection.2.3}
 \contentsline {subsection}{\numberline {2.4}Angabe des R-Codes mit Erl\IeC {\"a}uterungen}{10}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Erweiterung}{10}{subsection.2.5}
 \contentsline {section}{\numberline {3}T\IeC {\"a}gliche Absatzzahlen: Regressionsbasierte Budgetierung}{11}{section.3}
 \contentsline {subsection}{\numberline {3.1}Beschreibung der Vorgehensweise}{11}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Mathematische Beschreibung der verwendeten Prognosemodelle}{11}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Erl\IeC {\"a}uterung der Ergebnisse f\IeC {\"u}r gegossene, gezogene und gepresste Kerzen}{11}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}Angabe des R-Codes mit Erl\IeC {\"a}uterungen}{18}{subsection.3.4}
-\contentsline {section}{\numberline {4}Quartalsweise Absatzzahlen: Stochastische prozessbasierte Budgetierung}{19}{section.4}
-\contentsline {subsection}{\numberline {4.1}Beschreibung der Vorgehensweise}{19}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Mathematische Beschreibung der verwendeten Prognosemodelle}{20}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Erl\IeC {\"a}uterung der Ergebnisse f\IeC {\"u}r gegossene, gezogene und gepresste Kerzen}{20}{subsection.4.3}
-\contentsline {subsection}{\numberline {4.4}Angabe des R-Codes mit Erl\IeC {\"a}uterungen}{22}{subsection.4.4}
-\contentsline {section}{\numberline {5}Zusammenfassung und Ausblick}{24}{section.5}
+\contentsline {subsection}{\numberline {3.2}Mathematische Beschreibung der verwendeten Prognosemodelle}{12}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Erl\IeC {\"a}uterung der Ergebnisse f\IeC {\"u}r gegossene, gezogene und gepresste Kerzen}{13}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Angabe des R-Codes mit Erl\IeC {\"a}uterungen}{19}{subsection.3.4}
+\contentsline {section}{\numberline {4}Quartalsweise Absatzzahlen: Stochastische prozessbasierte Budgetierung}{20}{section.4}
+\contentsline {subsection}{\numberline {4.1}Beschreibung der Vorgehensweise}{20}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Mathematische Beschreibung der verwendeten Prognosemodelle}{21}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Allgemein}{21}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Stochastischer Prozess}{21}{subsubsection.4.2.2}
+\contentsline {subsection}{\numberline {4.3}Erl\IeC {\"a}uterung der Ergebnisse f\IeC {\"u}r gegossene, gezogene und gepresste Kerzen}{22}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Angabe des R-Codes mit Erl\IeC {\"a}uterungen}{24}{subsection.4.4}
+\contentsline {section}{\numberline {5}Zusammenfassung und Ausblick}{26}{section.5}

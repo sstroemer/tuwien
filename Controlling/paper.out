@@ -4,14 +4,17 @@
 \BOOKMARK [2][-]{subsection.2.2}{Mathematische Beschreibung der verwendeten Prognosemodelle}{section.2}% 4
 \BOOKMARK [2][-]{subsection.2.3}{Erl\344uterung der Ergebnisse f\374r gegossene, gezogene und gepresste Kerzen}{section.2}% 5
 \BOOKMARK [2][-]{subsection.2.4}{Angabe des R-Codes mit Erl\344uterungen}{section.2}% 6
-\BOOKMARK [1][-]{section.3}{T\344gliche Absatzzahlen: Regressionsbasierte Budgetierung}{}% 7
-\BOOKMARK [2][-]{subsection.3.1}{Beschreibung der Vorgehensweise}{section.3}% 8
-\BOOKMARK [2][-]{subsection.3.2}{Mathematische Beschreibung der verwendeten Prognosemodelle}{section.3}% 9
-\BOOKMARK [2][-]{subsection.3.3}{Erl\344uterung der Ergebnisse f\374r gegossene, gezogene und gepresste Kerzen}{section.3}% 10
-\BOOKMARK [2][-]{subsection.3.4}{Angabe des R-Codes mit Erl\344uterungen}{section.3}% 11
-\BOOKMARK [1][-]{section.4}{Quartalsweise Absatzzahlen: Stochastische prozessbasierte Budgetierung}{}% 12
-\BOOKMARK [2][-]{subsection.4.1}{Beschreibung der Vorgehensweise}{section.4}% 13
-\BOOKMARK [2][-]{subsection.4.2}{Mathematische Beschreibung der verwendeten Prognosemodelle}{section.4}% 14
-\BOOKMARK [2][-]{subsection.4.3}{Erl\344uterung der Ergebnisse f\374r gegossene, gezogene und gepresste Kerzen}{section.4}% 15
-\BOOKMARK [2][-]{subsection.4.4}{Angabe des R-Codes mit Erl\344uterungen}{section.4}% 16
-\BOOKMARK [1][-]{section.5}{Zusammenfassung und Ausblick}{}% 17
+\BOOKMARK [2][-]{subsection.2.5}{Erweiterung}{section.2}% 7
+\BOOKMARK [1][-]{section.3}{T\344gliche Absatzzahlen: Regressionsbasierte Budgetierung}{}% 8
+\BOOKMARK [2][-]{subsection.3.1}{Beschreibung der Vorgehensweise}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.2}{Mathematische Beschreibung der verwendeten Prognosemodelle}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.3}{Erl\344uterung der Ergebnisse f\374r gegossene, gezogene und gepresste Kerzen}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.4}{Angabe des R-Codes mit Erl\344uterungen}{section.3}% 12
+\BOOKMARK [1][-]{section.4}{Quartalsweise Absatzzahlen: Stochastische prozessbasierte Budgetierung}{}% 13
+\BOOKMARK [2][-]{subsection.4.1}{Beschreibung der Vorgehensweise}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.2}{Mathematische Beschreibung der verwendeten Prognosemodelle}{section.4}% 15
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Allgemein}{subsection.4.2}% 16
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Stochastischer Prozess}{subsection.4.2}% 17
+\BOOKMARK [2][-]{subsection.4.3}{Erl\344uterung der Ergebnisse f\374r gegossene, gezogene und gepresste Kerzen}{section.4}% 18
+\BOOKMARK [2][-]{subsection.4.4}{Angabe des R-Codes mit Erl\344uterungen}{section.4}% 19
+\BOOKMARK [1][-]{section.5}{Zusammenfassung und Ausblick}{}% 20

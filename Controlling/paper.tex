@@ -137,6 +137,31 @@ Eine wichtige Grundlage bei der zeitreihenbasierten Vorhersage mittels sogenannt
 Wir verwenden für einen ersten Einblick die allgemeine Vorhersage Funktion des Paktes "forecast" \cite{forecast}. Diese benutzt für die Vorhersage eine Kombination aus STL \cite{stl} (Seasonal, Trend, Irregular mittels Loess) und ein ETS \cite{ets} (= Error, Trend, Seasonal) Modell. 
 
 \subsection{Mathematische Beschreibung der verwendeten Prognosemodelle}
+
+Das "forecast"-Paket (\cite{forecast}) von Rob. J. Hyndman basiert großteils auf dem Werk von Hyndman und Athanasopoulos ()\cite{hyndman2018forecasting}). Die Grundlage ist ein sogenanntes "Exponential smoothing"-Modell:\\
+
+Seien $y_t$ observierte Daten, $x_t$ nicht-observierte Zustände (beide $t \in \{1,\dots,T\}$) und $\hat{y}_{T+h|T}$ die h-Schritt Prognose auf der bis zum Zeitpunkt $T$ basierenden Information, dann ergibt sich eine Vorhersage-Gleichung durch:
+
+\begin{equation} 
+	\hat{y}_{t+h|t}=\sum_{j=1}^{t} \alpha(1-\alpha)^{t-j} y_{j}+(1-\alpha)^{t} \ell_{0}, \quad(0 \leq \alpha \leq 1)
+\end{equation}
+
+Um diese Prognose zu optimieren, müssen also $\alpha$ und $\ell_0$ gewählt werden. Um dies zu bewerkstelligen, wählen wir beide so, dass 
+\begin{equation} 
+	MSE=\frac{1}{T} \sum_{t=1}^{T}\left(y_{t}-\hat{y}_{t|t-1}\right)^{2}=\frac{1}{T} \sum_{t=1}^{T} e_{t}^{2}
+\end{equation}
+
+minimiert wird. Hier zeigt sich bereits ein signifikanter Unterschied zu der, später behandelten, Regression: Es gibt keinerlei Closed-Form Lösung dieser Minimierungsaufgabe weshalb diese numerisch gelöst werden muss. Die 1-Schritt-Prognose kann selbst verständlich rekursiv angewandt werden um weitere Prognosen zu erzeugen.\\
+
+Die "forecast" Funktion kann weiters auch automatische Trend, ... Modelle wählen. So finden sich in \cite{hyndman2018forecasting} unter anderem Holt's, exponential und damped additive Trend Schätzer. Hier findet der interessierte Leser (ab Seite 42) auch korrekte Modellgleichungen für verschiedene Kombinationen an Error, Trend und Seasonal Modellen. \\
+
+Die effektive Zerlegung der gegebenen Daten in saisonale und trendbedingte Komponenten erfolgt allerdings mittels STL  ("Seasonal and Trend decomposition using Loess") \cite{cleveland1990stl} die die gegebenen Daten in drei verschiedene Komponenten (Trend, Seasonal und Remainder) teilt:
+
+\begin{equation}
+	Y_{v}=T_{v}+S_{v}+R_{v}
+\end{equation}
+
+\newpage
 \subsection{Erläuterung der Ergebnisse für gegossene, gezogene und gepresste Kerzen}
 
 Die folgenden drei Abbildungen zeigen den prognostizierten Verlauf der Absätze im kommenden Jahr - aufgeteilt nach Kerzentypen. In Grau bzw. Dunkel-Grau werden die 95\% bzw. 80\% Konfidenzintervalle dargestellt. Wir sehen Verläufe die "optisch" einer Kombination der beiden vorangegangenen Jahre entsprechen. Großer Vorteil dieser tageweisen Vorhersage ist, dass sie prinzipiell am Ende jedes Tages neu berechnet werden kann (nun mit mehr Daten) und eine genauere Prognose für den kommenden Zeitraum liefert (dies kann zum Beispiel benutzt werden, um rolling-window Vorhersagen der erwarteten Absätze der jeweils nächsten fünf Tage durchzuführen).\\
@@ -224,6 +249,10 @@ ccumsumplot(forecast.ts.auto.agg.A, forecast.ts.auto.agg.B, forecast.ts.auto.agg
             "Expected sales - All candles - STL+ETS", scale.ABC)
 \end{lstlisting}
 
+\subsection{Erweiterung}
+
+Eine Problematik mit der vorliegenden Nutzung des STL+ETS Modells ist sicherlich, dass in den Daten unterschiedliche Saisonalitäten (mit unterschiedlichen Frequenzen) auftreten können. Ein Algorithmus, der solche Fälle unter Umständen besser handhabt ist TBATS (Exponential Smoothing State Space Model With Box-Cox Transformation, ARMA Errors, Trend And Seasonal Components \cite{de2011forecasting}). Eine Implementierung und Auswertung findet sich im vollständigen Source Code \url{https://github.com/sstroemer/tuwien/tree/master/Controlling} - weitere Informationen auch in \cite{tbats}.
+
 \newpage
 \section{Tägliche Absatzzahlen: Regressionsbasierte Budgetierung}
 
@@ -237,10 +266,54 @@ Anmerkung: Ein hinzufügen eines "Kreuzterm" wie "year*as.factor(month)" löst e
 
 Ein zu untersuchender Faktor der hier eine Rolle spielen (kann) sind nicht zeitlich fixierte Feiertage (z.B. Ostern). Diese können durchaus auch in die Untersuchung miteinbezogen werden - dies würden den Rahmen der vorliegenden Arbeit aber sprengen. Siehe dazu unter anderem \cite{holidays} von Rob J. Hyndman.
 
+\newpage
 \subsection{Mathematische Beschreibung der verwendeten Prognosemodelle}
-\subsection{Erläuterung der Ergebnisse für gegossene, gezogene und gepresste Kerzen}
+
+Lineare Regressionsmodelle werden in R symbolisch definiert \cite{lm}:
+\begin{equation}
+	y \sim c + x_0 + \dots + x_n,
+\end{equation}
+
+wobei $c$ (= 0 / 1) die Inkludierung eines Intercepts ( = nein / ja) beschreibt und $x_i$ die $i$-te erklärende Variable bezeichnet die benutzt wird um die abhängige Variable $y$ zu beschreiben.\\
+
+Eine wichtige Information über die Qualität der Regression bietet das zentrierte Bestimmtheitsmaß $R^2$:
+
+\begin{eqnarray}
+	TSS :=  \sum_{i=1}^n(y_i - \bar{y})^2  \\
+	ESS :=  \sum_{i=1}^n(\hat{y}_i - \bar{y})^2 \\
+	R^2 := \frac{ESS}{TSS}
+\end{eqnarray},
+
+wobei $\hat{y}_i$ die fitted values bezeichnet. Im verallgemeinerten linearen Regressionmodell (VLM) lässt sich nun mit Residuen $u$ und Aufnahme des Intercepts in die Regressormatrix $X$ das Modell
+
+\begin{equation}
+	y = X\beta +u
+\end{equation}
+
+mittels des Aitken- (oder General-Least-Squares-) Schätzers
+
+\begin{equation}
+	\tilde{\beta} = (X^T\Omega^{-1}X)^{-1}X^T\Omega^{-1}y	
+\end{equation}
+
+"lösen". Hierbei bechreibt $\Omega$ die Kovarianz der (um Null) normalverteilten Residuen:
+
+\begin{eqnarray}
+	E(u) = 0\\
+	VC(u)=\sigma^2 \cdot \Omega
+\end{eqnarray},
+
+mit $\Omega>0$ und $\Omega$ bekannt. Hierbei bezieht sich $>$ im Hinblick auf Matrizen auf die Löwner (Halb-)Ordnung \cite{loew}.\\
+
+Somit ergibt sich die Prognose mittels des Schätzers $\tilde{\beta}$ des Parametervektors $\beta$ durch:
+\begin{equation}
+	\tilde{y}_{f}=x_{f}^T\cdot\tilde{\beta}
+\end{equation}
+
 
 \newpage
+\subsection{Erläuterung der Ergebnisse für gegossene, gezogene und gepresste Kerzen}
+
 Zuerst betrachten wir die Residuen grafisch:
 
 \begin{figure}[H]
@@ -532,6 +605,35 @@ Um dieses Problem zu umgehen, fixieren wir den Variationskoeffizienten auf einen
 Nach Vorbereitung all dieser Kenndaten, können wir die Dichtefunktion der einzelnen Quartale (siehe \ref{density}) angeben sowie eine kumulierte Jahrestrajektorie (mit streuenden Unsicherheitsbändern die wir mittels der korrigierten Standardabweichung berechnen können) ausgeben.
 
 \subsection{Mathematische Beschreibung der verwendeten Prognosemodelle}
+
+\subsubsection{Allgemein}
+
+R benutzt für die Berechnung der Standard-Abweichung \cite{sd} die korrigierte Standard-Abweichung:
+\begin{equation}
+	s^{2}={\frac {1}{N-1}}\sum _{i=1}^{N}(x_{i}-{\overline {x}})^{2}
+\end{equation}
+
+Die Berechnung der Varianz ist analog.
+
+\subsubsection{Stochastischer Prozess}
+
+Sei $(\Omega ,{\mathcal {F}},P)$ ein Wahrscheinlichkeitsraum, $(Z,{\mathcal {Z}})$ ein mit einer$\sigma$-Algebra versehener Raum und $T$ eine Indexmenge, die in unserer Anwendung die Menge der betrachteten Zeitpunkte darstellt. Ein stochastischer Prozess $X$ ist dann eine Familie von Zufallsvariablen $X_t \colon \Omega \to Z,\;t\in T$, also eine Abbildung
+
+\begin{equation}
+X\colon \Omega \times T\to Z,\;(\omega ,t)\mapsto X_{t}(\omega ),
+\end{equation}
+
+sodass $X_{t}\colon \omega \mapsto X_{t}(\omega )$ für alle $t\in T$ eine ${\mathcal {F}}$-${\mathcal {Z}}$-messbare Abbildung ist.\\
+
+Nach Schätzung (Achtung: die berechneten Werte für Standardabweichung/Varianz bzw. Erwartungswert sind nur Schätzer und nicht die "echten" Werte. Zum Beispiel beschreibt das 95\% Konfidenzintervall der Standardabweichung $\sigma$: $[0.94*\sigma, 1.07*\sigma]$\cite{sdci}) der Werte für Standardabweichung und Erwartungswert, können diese benutzt werden um für die einzelnen Quartale eine Prognose zu konstruieren ($x_t$ sind die gemessenen Absätze, $\sigma_t$ deren Standardabweichung und $y_t$ die kumulativen Prognosen bis inklusive Quartal $t$):
+
+\begin{eqnarray}
+	\bar{y}_t := \sum_{i=1}^{t} \bar{x}_t\\
+	y_t^+ := \sum_{i=1}^{t} \bar{x}_t + \sqrt{\sum_{i=1}^{t} \sigma_t^2}\\
+	y_t^- := \sum_{i=1}^{t} \bar{x}_t - \sqrt{\sum_{i=1}^{t} \sigma_t^2}\\
+\end{eqnarray}
+
+\newpage
 \subsection{Erläuterung der Ergebnisse für gegossene, gezogene und gepresste Kerzen}
 
 Wie bereits beschrieben, können wir mittels der gewonnenen Informationen die Dichtefunktionen der einzelnen Quartale darstellen (hier bereits mit Korrektur auf mind. 5\%-igen Variationskoeffizienten):
@@ -552,6 +654,7 @@ Die "Sales at Risk" ergeben sich dann wie folgt:
 	\label{salesatrisk}
 \end{figure}
 
+\newpage
 Der Jahresabsatz sieht dann (in Dichte bzw. Wahrscheinlichkeit) so aus:
 
 \begin{figure}[H]
@@ -568,6 +671,7 @@ Der Jahresabsatz sieht dann (in Dichte bzw. Wahrscheinlichkeit) so aus:
 	\label{year_prob}
 \end{figure}
 
+\newpage
 Die Jahresabsatztrajektorie (analog zu den anderen Prognosemodellen) sieht dann wie folgt aus:
 
 \begin{figure}[H]
@@ -577,6 +681,7 @@ Die Jahresabsatztrajektorie (analog zu den anderen Prognosemodellen) sieht dann 
 	\label{year_traj}
 \end{figure}
 
+\vskip 5 em
 \subsection{Angabe des R-Codes mit Erläuterungen}
 
 \begin{lstlisting}
@@ -653,7 +758,7 @@ cumsumplot(forecast.stoch, "Expected sales - All candles - Stochastic", scale.AB
 
 \newpage
 \section{Zusammenfassung und Ausblick}
-Zuerst betrachten wir die prognostizierten Jahresabsätze der einzelnen Algorithmen (jeweils gemeinsam mit einem 95\% CI). Wir sehen, dass sowohl die Regression als auch die Stochastische Planung einen erwarteten Absatz von rund 173000 Stück ergeben. Dieser Wert wird durch die zeitreihenbasierte Vorhersage etwas höher geschätzt: 185000. Auch die Unsicherheit ist hier (aufgrund der "fehler-kumulierenden" Wirkung der zugrunde liegenden ARMA Struktur) höher.
+Zuerst betrachten wir die prognostizierten Jahresabsätze der einzelnen Algorithmen (jeweils gemeinsam mit einem 95\% CI). Wir sehen, dass sowohl die Regression als auch die Stochastische Planung einen erwarteten Absatz von rund 173000 Stück ergeben. Dieser Wert wird durch die zeitreihenbasierte Vorhersage etwas höher geschätzt: 185000. Auch die Unsicherheit ist hier (aufgrund der "fehler-kumulierenden" Wirkung der zugrunde liegenden Struktur) höher.
 \begin{lstlisting}
 "------- STL + ETS -------"
 "Mean:   185613"
@@ -699,6 +804,8 @@ Daraus ergibt sich folgende Empfehlung zur Implementierung:
 	\item Ein regressionsbasiertes Modell zur Untersuchung und Erklärung des Kunden-/Kaufverhaltens.
 	\item Ein stochastisches Modell zur einfachen Untersuchung und Planung verschiedener vorgegebener Budgetpläne von Seiten der GF.
 \end{itemize}
+
+In einer solchen gegebenen Situation sollte dennoch die erste (aus einer Data-Analyis Sicht gesehene) Empfehlung sein, einen konkreten Plan für eine umfassende Erhebung von Absatz-, Kunden- und Standortdaten sein. Ohne ein fundiertes, nachhaltiges Konzept kann die dauerhafte Aussagekraft der Prognosen nicht gewährleistet werden - außerdem gibt es viele noch unbekannte Einflüsse und Variablen.
 
 
 \newpage
